@@ -1,6 +1,7 @@
 package com.learning.api.services;
 
 import com.learning.api.dtos.UserDto;
+import com.learning.api.exceptions.DataIntegratyViolationException;
 import com.learning.api.exceptions.ObjectNotFoundException;
 import com.learning.api.models.User;
 import com.learning.api.repositories.UserRepository;
@@ -16,8 +17,7 @@ import java.util.Optional;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 class UserServiceTest {
@@ -98,6 +98,19 @@ class UserServiceTest {
         assertEquals(NAME, response.getName());
         assertEquals(EMAIL, response.getEmail());
         assertEquals(PASSWORD, response.getPassword());
+    }
+
+    @Test
+    void whenCreateThenReturnAnDataIntegrityViolationException() {
+        when(userRepository.findByEmail(anyString())).thenReturn(optionalUser);
+
+        try{
+            optionalUser.get().setId(2L);
+            userService.create(userDto);
+        }catch (Exception exception){
+            assertEquals(DataIntegratyViolationException.class, exception.getClass());
+            assertEquals("Email exists in system, can't duplicate.", exception.getMessage());
+        }
     }
 
     @Test
