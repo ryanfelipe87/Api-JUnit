@@ -23,7 +23,7 @@ public class UserService {
 
     public User findById(Long id) {
        return userRepository.findById(id)
-                .orElseThrow(() -> new ObjectNotFoundException("Object not found"));
+                .orElseThrow(() -> new ObjectNotFoundException("Object not found with this ID: " + id));
     }
 
     public List<User> findAll(){
@@ -38,6 +38,11 @@ public class UserService {
     public User update(UserDto userDto){
         findByEmail(userDto);
         return userRepository.save(mapper.map(userDto, User.class));
+    }
+
+    public void delete(Long id){
+        findById(id);
+        userRepository.deleteById(id);
     }
 
     private void findByEmail(UserDto userDto){
