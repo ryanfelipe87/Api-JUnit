@@ -28,6 +28,7 @@ class UserServiceTest {
     private static final String PASSWORD = "7432";
     public static final int INDEX = 0;
     public static final String EMAIL_EXISTS_IN_SYSTEM_CAN_T_DUPLICATE = "Email exists in system, can't duplicate.";
+    public static final String OBJECT_NOT_FOUND = "Object not found";
 
     @InjectMocks
     private UserService userService;
@@ -147,6 +148,18 @@ class UserServiceTest {
         doNothing().when(userRepository).deleteById(anyLong());
         userService.delete(ID);
         verify(userRepository, times(1)).deleteById(anyLong());
+    }
+
+    @Test
+    void deleteWithObjectNotFoundException(){
+        when(userRepository.findById(anyLong())).thenThrow(new ObjectNotFoundException(OBJECT_NOT_FOUND));
+
+        try{
+            userService.delete(ID);
+        }catch (Exception exception){
+            assertEquals(ObjectNotFoundException.class, exception.getClass());
+            assertEquals(OBJECT_NOT_FOUND, exception.getMessage());
+        }
     }
 
     private void startUser(){
