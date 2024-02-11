@@ -35,9 +35,14 @@ public class UserService {
         return userRepository.save(mapper.map(userDto, User.class));
     }
 
+    public User update(UserDto userDto){
+        findByEmail(userDto);
+        return userRepository.save(mapper.map(userDto, User.class));
+    }
+
     private void findByEmail(UserDto userDto){
         Optional<User> userOptional = userRepository.findByEmail(userDto.getEmail());
-        if(userOptional.isPresent()){
+        if(userOptional.isPresent() && !userOptional.get().equals(userDto.getId())){
             throw  new DataIntegratyViolationException("Email exists in system, can't duplicate.");
         }
     }
