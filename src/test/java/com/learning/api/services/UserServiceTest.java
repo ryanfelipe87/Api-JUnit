@@ -1,6 +1,7 @@
 package com.learning.api.services;
 
 import com.learning.api.dtos.UserDto;
+import com.learning.api.exceptions.ObjectNotFoundException;
 import com.learning.api.models.User;
 import com.learning.api.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,6 +56,17 @@ class UserServiceTest {
         assertEquals(ID, response.getId());
         assertEquals(NAME, response.getName());
         assertEquals(EMAIL, response.getEmail());
+    }
+
+    @Test
+    void whenFindByIdThenReturnAnObjectNotFoundException(){
+        when(userRepository.findById(anyLong())).thenThrow(new ObjectNotFoundException("Object not found with this ID: "));
+        try{
+            userService.findById(ID);
+        }catch (Exception exception){
+            assertEquals(ObjectNotFoundException.class, exception.getClass());
+            assertEquals("Object not found with this ID: ", exception.getMessage());
+        }
     }
 
     @Test
