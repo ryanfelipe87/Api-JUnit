@@ -1,7 +1,7 @@
 package com.learning.api.services;
 
 import com.learning.api.dtos.UserDto;
-import com.learning.api.exceptions.DataIntegratyViolationException;
+import com.learning.api.exceptions.DataIntegrityViolationException;
 import com.learning.api.exceptions.ObjectNotFoundException;
 import com.learning.api.models.User;
 import com.learning.api.repositories.UserRepository;
@@ -48,7 +48,7 @@ public class UserService {
     private void findByEmail(UserDto userDto){
         Optional<User> userOptional = userRepository.findByEmail(userDto.getEmail());
         if(userOptional.isPresent() && !userOptional.get().equals(userDto.getId())){
-            throw  new DataIntegratyViolationException("Email exists in system, can't duplicate.");
+            throw  new DataIntegrityViolationException("Email exists in system, can't duplicate.");
         }
     }
 }

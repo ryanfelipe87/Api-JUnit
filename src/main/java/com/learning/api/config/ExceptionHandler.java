@@ -1,5 +1,5 @@
 package com.learning.api.config;
-import com.learning.api.exceptions.DataIntegratyViolationException;
+import com.learning.api.exceptions.DataIntegrityViolationException;
 import com.learning.api.exceptions.ObjectNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -18,8 +18,8 @@ public class ExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(DataIntegratyViolationException.class)
-    public ResponseEntity<StandardError> dataIntegratyViolation(DataIntegratyViolationException exception, HttpServletRequest request){
+    @org.springframework.web.bind.annotation.ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<StandardError> dataIntegratyViolation(DataIntegrityViolationException exception, HttpServletRequest request){
         StandardError error = new StandardError(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), exception.getMessage(), request.getRequestURI());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }

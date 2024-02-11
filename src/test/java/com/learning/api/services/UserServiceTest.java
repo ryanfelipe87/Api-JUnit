@@ -1,7 +1,7 @@
 package com.learning.api.services;
 
 import com.learning.api.dtos.UserDto;
-import com.learning.api.exceptions.DataIntegratyViolationException;
+import com.learning.api.exceptions.DataIntegrityViolationException;
 import com.learning.api.exceptions.ObjectNotFoundException;
 import com.learning.api.models.User;
 import com.learning.api.repositories.UserRepository;
@@ -27,6 +27,7 @@ class UserServiceTest {
     private static final String EMAIL = "rshow@example.com";
     private static final String PASSWORD = "7432";
     public static final int INDEX = 0;
+    public static final String EMAIL_EXISTS_IN_SYSTEM_CAN_T_DUPLICATE = "Email exists in system, can't duplicate.";
 
     @InjectMocks
     private UserService userService;
@@ -108,8 +109,8 @@ class UserServiceTest {
             optionalUser.get().setId(2L);
             userService.create(userDto);
         }catch (Exception exception){
-            assertEquals(DataIntegratyViolationException.class, exception.getClass());
-            assertEquals("Email exists in system, can't duplicate.", exception.getMessage());
+            assertEquals(DataIntegrityViolationException.class, exception.getClass());
+            assertEquals(EMAIL_EXISTS_IN_SYSTEM_CAN_T_DUPLICATE, exception.getMessage());
         }
     }
 
@@ -125,6 +126,19 @@ class UserServiceTest {
         assertEquals(NAME, response.getName());
         assertEquals(EMAIL, response.getEmail());
         assertEquals(PASSWORD, response.getPassword());
+    }
+
+    @Test
+    void whenUpdateThenReturnAnDataIntegrityViolationException() {
+        when(userRepository.findByEmail(anyString())).thenReturn(optionalUser);
+
+        try{
+            optionalUser.get().setId(2L);
+            userService.create(userDto);
+        }catch (Exception exception){
+            assertEquals(DataIntegrityViolationException.class, exception.getClass());
+            assertEquals(EMAIL_EXISTS_IN_SYSTEM_CAN_T_DUPLICATE, exception.getMessage());
+        }
     }
 
     @Test
