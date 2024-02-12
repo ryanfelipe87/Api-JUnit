@@ -31,9 +31,9 @@ class UserControllerTest {
     private static final String PASSWORD = "7432";
     public static final int INDEX = 0;
 
-    private User user;
+    private User user = new User();
 
-    private UserDto userDto;
+    private UserDto userDto = new UserDto();
 
     @InjectMocks
     private UserController userController;
